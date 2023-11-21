@@ -22,14 +22,6 @@ clean_data = function(data){
     cat("Hay", years_eliminados, "registros que no cuentan con dato de año, serán eliminados\n\n")
   }
 
-  sexo_eliminados = table(data[!(data$SEX %in% c("Hembra","Macho")),]$SEX)
-
-  if(length(sexo_eliminados) > 0){
-    for(i in 1:length(sexo_eliminados)){
-      cat("Hay", as.numeric(sexo_eliminados[i]), "registros con sexo", names(sexo_eliminados[i]),"\n\n")
-    }
-  }
-
   sex_NA_eliminados = sum(is.na(data$SEX))
 
   if(sex_NA_eliminados > 0){

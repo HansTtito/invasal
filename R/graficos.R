@@ -136,16 +136,16 @@ plot_boxplot_sex = function(data, colores, labels, name_plot, output_path, heigh
 
 
 
-plot_boxplot_igs_sex = function(data, colores, labels, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 10, size_title_axis = 14) {
+plot_boxplot_igs_sex = function(data, colores, labels, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 10, size_title_axis = 14, lvels = c("Macho","Hembra")) {
 
-  lvls_sex = unique(data$SEX)
+  lvls_sex = lvels
 
   if(length(lvls_sex) != length(labels)) {
     stop("verificar los labels, los levels son ", paste0(lvls_sex," "))
   }
 
   bxp_sex_season = data %>%
-    mutate(mes = factor(MONTH, levels = c(9, 10,11, 12, 1, 2, 3)),
+    mutate(mes = factor(MONTH, levels = c(10,11, 12, 1, 2, 3, 4)),
            SEX = factor(SEX, levels = lvls_sex, labels = labels)) %>%
     ggplot(aes(x = interaction(mes, SEX, season, sep = "&"), y = IGS, fill = SEX)) +
     geom_boxplot() +

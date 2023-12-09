@@ -51,7 +51,7 @@ plot_mean_length = function(data, colores, labels, name_plot, output_path, heigh
 
 
 
-plot_tallas_gridges_sex = function(data, order_years = "decreasing", colores, labels, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 12, angle_text_x = 0, size_title_axis = 14){
+plot_tallas_gridges_sex = function(data, order_years = "decreasing", colores, labels, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 12, angle_text_x = 0, size_title_axis = 14, alpha = 0.7, ...){
 
 
   if(order_years %in% "decreasing") {
@@ -66,7 +66,7 @@ plot_tallas_gridges_sex = function(data, order_years = "decreasing", colores, la
     mutate(season = factor(season, levels = lvls),
            SEX = factor(SEX, levels = c("Hembra","Macho","Indet"), labels = labels)) %>%
     ggplot() +
-    geom_density_ridges(aes(x = TL_CM, y = season, fill = SEX, scale = 1)) +
+    geom_density_ridges(aes(x = TL_CM, y = season, fill = SEX, scale = 1), alpha = alpha) +
     scale_fill_manual(values = colores, labels = labels) +
     labs(x = "Longitud Total (cm)", y = "", fill = "") +
     theme_bw()  +
@@ -74,16 +74,18 @@ plot_tallas_gridges_sex = function(data, order_years = "decreasing", colores, la
           axis.text.x = element_text(angle = angle_text_x),
           legend.text = element_text(size = 12),
           legend.key.size = unit(0.8,"cm"),
-          axis.title = element_text(size = size_title_axis))
+          axis.title = element_text(size = size_title_axis),...)
 
-  print(p_sex)
 
-  ggsave(file.path(output_path, name_plot), width = width_plot, height = heigh_plot)
+  ggsave(file.path(output_path, name_plot), plot = p_sex, width = width_plot, height = heigh_plot)
+
+  return(p_sex)
 
 }
 
 
-plot_tallas_gridges_total = function(data, order_years = "decreasing", color_total, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 12, angle_text_x = 0, size_title_axis = 14){
+
+plot_tallas_gridges_total = function(data, order_years = "decreasing", color_total, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 12, angle_text_x = 0, size_title_axis = 14, alpha = 0.7, ...){
 
 
   if(order_years %in% "decreasing") {
@@ -97,7 +99,7 @@ plot_tallas_gridges_total = function(data, order_years = "decreasing", color_tot
   p_total = data %>%
     mutate(season = factor(season, levels = lvls)) %>%
     ggplot() +
-    geom_density_ridges(aes(x = TL_CM, y = season, fill = "Total", scale = 1)) +
+    geom_density_ridges(aes(x = TL_CM, y = season, fill = "Total", scale = 1), alpha = alpha) +
     scale_fill_manual(values = color_total) +
     labs(x = "Longitud Total (cm)", y = "", fill = "") +
     theme_bw()  +
@@ -105,7 +107,7 @@ plot_tallas_gridges_total = function(data, order_years = "decreasing", color_tot
           axis.text.x = element_text(angle = angle_text_x),
           legend.text = element_text(size = 12),
           legend.key.size = unit(0.8,"cm"),
-          axis.title = element_text(size = size_title_axis))
+          axis.title = element_text(size = size_title_axis),...)
 
   print(p_total)
 
@@ -115,17 +117,17 @@ plot_tallas_gridges_total = function(data, order_years = "decreasing", color_tot
 
 
 
-plot_boxplot_sex = function(data, colores, labels, name_plot, output_path, heigh_plot, width_plot){
+plot_boxplot_sex = function(data, colores, labels, name_plot, output_path, heigh_plot, width_plot, alpha = 0.7, ...){
 
   plot_bx_sex = data  %>%
     mutate(SEX = factor(SEX, levels = c("Hembra","Macho","Indet"), labels = labels)) %>%
     ggplot() +
-    geom_boxplot(aes(x = interaction(SEX, season, sep = "&"), y = TL_CM, fill = SEX))  +
+    geom_boxplot(aes(x = interaction(SEX, season, sep = "&"), y = TL_CM, fill = SEX), alpha = alpha)  +
     scale_x_discrete(guide = guide_axis_nested(delim = "&")) +
     labs(y = "Longitud Total (cm)", x = "", size = "n", fill = "Sexo") +
     scale_fill_manual(values = colores, labels = labels) +
     theme_bw() +
-    theme(axis.text = element_text(color = "black", size = 10))
+    theme(axis.text = element_text(color = "black", size = 10), ...)
 
   print(plot_bx_sex)
 
@@ -136,7 +138,7 @@ plot_boxplot_sex = function(data, colores, labels, name_plot, output_path, heigh
 
 
 
-plot_boxplot_igs_sex = function(data, colores, labels, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 10, size_title_axis = 14, lvels = c("Macho","Hembra")) {
+plot_boxplot_igs_sex = function(data, colores, labels, name_plot, output_path, heigh_plot, width_plot, size_axis_text = 10, size_title_axis = 14, lvels = c("Macho","Hembra"), alpha = 0.7, ...) {
 
   lvls_sex = lvels
 
@@ -147,8 +149,8 @@ plot_boxplot_igs_sex = function(data, colores, labels, name_plot, output_path, h
   bxp_sex_season = data %>%
     mutate(mes = factor(MONTH, levels = c(10,11, 12, 1, 2, 3, 4)),
            SEX = factor(SEX, levels = lvls_sex, labels = labels)) %>%
-    ggplot(aes(x = interaction(mes, SEX, season, sep = "&"), y = IGS, fill = SEX)) +
-    geom_boxplot() +
+    ggplot() +
+    geom_boxplot(aes(x = interaction(mes, SEX, season, sep = "&"), y = IGS, fill = SEX), alpha = alpha) +
     scale_x_discrete(guide = guide_axis_nested(delim = "&")) +
     scale_fill_manual(values = colores, labels = labels) +
     labs(x = "") +
@@ -158,7 +160,7 @@ plot_boxplot_igs_sex = function(data, colores, labels, name_plot, output_path, h
           legend.key.height = unit(0.4, "cm"),
           legend.key.width = unit(0.3, "cm"),
           axis.title = element_text(size = size_title_axis),
-          axis.text = element_text(color = "black", size = size_axis_text)) +
+          axis.text = element_text(color = "black", size = size_axis_text), ...) +
     guides(fill = guide_legend(ncol = 1))
 
   print(bxp_sex_season)
